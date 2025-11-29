@@ -1,9 +1,11 @@
 package com.crio.rentVedio.service;
 
 import com.crio.rentVedio.model.User;
+import com.crio.rentVedio.exception.ResourceNotFoundException;
 import com.crio.rentVedio.model.Role;
 import com.crio.rentVedio.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +29,14 @@ public class UserService {
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public User authenticate(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
+        return user;
     }
 }

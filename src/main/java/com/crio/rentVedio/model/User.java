@@ -1,6 +1,9 @@
 package com.crio.rentVedio.model;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,4 +34,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role = Role.CUSTOMER;
+
+    @OneToMany(mappedBy = "user")
+private List<Rental> rentals = new ArrayList<>();
+
 }
